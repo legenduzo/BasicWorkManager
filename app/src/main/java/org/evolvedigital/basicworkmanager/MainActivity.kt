@@ -21,11 +21,23 @@ class MainActivity : AppCompatActivity() {
 //            val data = Data.Builder()
 //                .putString("WORK_MESSAGE", "Work Completed!")
 //                .build()
-            val data = workDataOf("WORK_MESSAGE" to "Work Completed!")
-            val workRequest = OneTimeWorkRequestBuilder<SimpleWorker>()
-                .setInputData(data)
+            // Set up constraints to stop the WorkManager from working under certain conditions
+            val constraints = Constraints.Builder()
+                .setRequiresCharging(true)
+                .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
-            val periodicworkRequest = PeriodicWorkRequestBuilder<SimpleWorker>(
+
+            // Helps you work with a database
+            val data = workDataOf("WORK_MESSAGE" to "Work Completed!")
+
+            val workRequest = OneTimeWorkRequestBuilder<SimpleWorker>()
+                    // Input data to the database
+                .setInputData(data)
+                .setConstraints(constraints)
+                .build()
+
+            // The periodic work request class is used when you want the tasks to run  periodically
+           val periodicWorkRequest = PeriodicWorkRequestBuilder<SimpleWorker>(
                 5, TimeUnit.MINUTES,
             1, TimeUnit.MINUTES
             ).build()
